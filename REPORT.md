@@ -21,6 +21,8 @@ The list of suggested project ideas in the assignment included a To-Do List, a N
 
 In Turkish universities, a student is normally allowed to be absent from at most 30% of the lectures of a course; if they exceed that limit, they automatically fail the course (DZ status), even if their grades are perfect. I have personally lost track of my absences several times during my own studies, so I decided to build a mobile app that does this counting for me. The app should let me add my courses, record each lecture as *attended*, *missed* or *excused*, and immediately tell me how many absences I have left and how risky my current situation is. I named the app **Devamlı**, which can be translated to English as "*regular*" or "*the one who keeps attending*".
 
+To be honest about why this idea felt personal to me: during my second year I caught a heavy flu and skipped a few classes of a database course in a row, and at the end of the term my advisor told me I had already used nine of my twelve allowed absences without realising it — one more illness and I would have failed the course outright. After that scare I started keeping notes in my phone's default note app, but it was too easy to forget which week I was looking at. Devamlı is essentially the tool I wished I had during that semester.
+
 The app has clear usefulness because every university student in Turkey faces this 30% rule, and it is also a different idea from the suggestions given in the assignment, which I think is important for being noticed by the instructor.
 
 ## 3. Technology Choice
@@ -59,7 +61,7 @@ I also chose a calm color palette (light gray background, white cards, a single 
 
 I created the project with `npx create-expo-app@latest devamli --template blank` and added the navigation and storage packages with `npx expo install`. Then I split the source under `src/` into four folders: `screens/`, `components/`, `utils/` and the two top-level files `theme.js` and `storage.js`. This separation made the code easier to read and is one of the things mentioned in the rubric (code organization).
 
-The first piece of real code I wrote was the **storage layer** in `src/storage.js`. It exposes two simple async functions, `loadCourses()` and `saveCourses(courses)`, and a few pure helpers (`makeCourse`, `makeSession`, `upsertCourse`, `removeCourse`, `addSession`, `removeSession`) that produce a new array without mutating the old one. Working with immutable updates is something I learned while studying React, and it makes the rest of the application much easier to reason about because the screens just call `setCourses(next)` and React redraws.
+The first piece of real code I wrote was the **storage layer** in `src/storage.js`. It exposes two simple async functions, `loadCourses()` and `saveCourses(courses)`, and a few pure helpers (`makeCourse`, `makeSession`, `upsertCourse`, `removeCourse`, `addSession`, `removeSession`) that produce a new array without mutating the old one. Working with immutable updates is something I learned while studying React. I had picked up that mindset mostly from the official React documentation and from reading the introduction of the Redux Toolkit guide before this course; even though Devamlı does not use Redux, the rule of treating state as read-only stayed with me and saved me from many "why is the screen not updating" moments later. Concretely, it makes the rest of the application much easier to reason about because the screens just call `setCourses(next)` and React redraws.
 
 ```js
 export async function loadCourses() {
@@ -109,11 +111,15 @@ The second challenge was about **state freshness**. When I added a new course in
 
 A third challenge was the **risk thresholds**. My first version showed *Watch out* only when there were exactly two absences left, but during a quick test with my own course list I realised that a student wants to be warned a little earlier. I changed the rule so that the warning state covers one *or* two remaining absences, and the *critical* state appears only at zero. This is a small change but a good example of why testing the app on real data matters: numbers that look fine on paper can feel wrong in practice.
 
-The last challenge was **avoiding mutations**. Early on I accidentally mutated a course object directly in the Course Detail screen and the FlatList stopped re-rendering. After that I converted every update to a pure function returning a new object, which is safer with React's diffing algorithm.
+The fourth challenge was **avoiding mutations**. Early on I accidentally mutated a course object directly in the Course Detail screen and the FlatList stopped re-rendering. After that I converted every update to a pure function returning a new object, which is safer with React's diffing algorithm.
+
+A fifth, smaller, but genuinely annoying problem was that the **iOS keyboard initially covered the Save button** on the Add Course and Mark Session forms. At first I did not even understand why the form was suddenly broken — I just saw the button disappear when I tapped a text input and assumed I had a flexbox bug somewhere. After about an hour of staring at layout properties, I learnt that React Native ships a component called `KeyboardAvoidingView` with a "padding" behaviour for iOS; wrapping each form with it pushed the content above the keyboard properly. It is a tiny fix in retrospect, but it taught me to always test forms with the on-screen keyboard open, not only with the simulator's hardware keyboard.
 
 ## 8. Conclusion
 
 Building **Devamlı** taught me how to plan, design and deliver a small but complete mobile application. The interface is clean, the four screens flow naturally from one to the other, every piece of user input is validated before being saved, and all data survives across restarts thanks to AsyncStorage. More importantly, I built something that I will actually keep on my own phone for the rest of my degree. The combination of React Native and Expo turned out to be a very productive choice, and I plan to extend the project after the semester with a calendar view of absences and a small notification that warns me on the morning of a class I tend to skip.
+
+On a more personal note, this assignment was the first time I shipped an app that actually runs on my own phone, not just on a localhost browser tab. Watching Expo Go reload the screen as I saved a file in the editor turned out to be the most motivating part of the whole semester for me — I now understand why mobile developers say the development loop matters at least as much as the language itself.
 
 ## 9. GitHub Information
 

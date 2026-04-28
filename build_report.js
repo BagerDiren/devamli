@@ -230,6 +230,11 @@ children.push(
 );
 children.push(
   para(
+    "To be honest about why this idea felt personal to me: during my second year I caught a heavy flu and skipped a few classes of a database course in a row, and at the end of the term my advisor told me I had already used nine of my twelve allowed absences without realising it — one more illness and I would have failed the course outright. After that scare I started keeping notes in my phone's default note app, but it was too easy to forget which week I was looking at. Devamlı is essentially the tool I wished I had during that semester."
+  )
+);
+children.push(
+  para(
     'The app has clear usefulness because every university student in Turkey faces this 30% rule, and it is also a different idea from the suggestions given in the assignment, which I think is important for being noticed by the instructor.'
   )
 );
@@ -345,7 +350,7 @@ children.push(
     inlineCode('addSession'),
     bodyText(', '),
     inlineCode('removeSession'),
-    bodyText(") that produce a new array without mutating the old one. Working with immutable updates is something I learned while studying React, and it makes the rest of the application much easier to reason about because the screens just call "),
+    bodyText(') that produce a new array without mutating the old one. Working with immutable updates is something I learned while studying React. I had picked up that mindset mostly from the official React documentation and from reading the introduction of the Redux Toolkit guide before this course; even though Devamlı does not use Redux, the rule of treating state as read-only stayed with me and saved me from many "why is the screen not updating" moments later. Concretely, it makes the rest of the application much easier to reason about because the screens just call '),
     inlineCode('setCourses(next)'),
     bodyText(' and React redraws.'),
   ])
@@ -477,9 +482,18 @@ children.push(
 );
 children.push(
   richPara([
-    bodyText('The last challenge was '),
+    bodyText('The fourth challenge was '),
     bodyText('avoiding mutations', { bold: true }),
     bodyText('. Early on I accidentally mutated a course object directly in the Course Detail screen and the FlatList stopped re-rendering. After that I converted every update to a pure function returning a new object, which is safer with React’s diffing algorithm.'),
+  ])
+);
+children.push(
+  richPara([
+    bodyText('A fifth, smaller, but genuinely annoying problem was that the '),
+    bodyText('iOS keyboard initially covered the Save button', { bold: true }),
+    bodyText(' on the Add Course and Mark Session forms. At first I did not even understand why the form was suddenly broken — I just saw the button disappear when I tapped a text input and assumed I had a flexbox bug somewhere. After about an hour of staring at layout properties, I learnt that React Native ships a component called '),
+    inlineCode('KeyboardAvoidingView'),
+    bodyText(' with a "padding" behaviour for iOS; wrapping each form with it pushed the content above the keyboard properly. It is a tiny fix in retrospect, but it taught me to always test forms with the on-screen keyboard open, not only with the simulator’s hardware keyboard.'),
   ])
 );
 
@@ -488,6 +502,11 @@ children.push(heading('8. Conclusion'));
 children.push(
   para(
     'Building Devamlı taught me how to plan, design and deliver a small but complete mobile application. The interface is clean, the four screens flow naturally from one to the other, every piece of user input is validated before being saved, and all data survives across restarts thanks to AsyncStorage. More importantly, I built something that I will actually keep on my own phone for the rest of my degree. The combination of React Native and Expo turned out to be a very productive choice, and I plan to extend the project after the semester with a calendar view of absences and a small notification that warns me on the morning of a class I tend to skip.'
+  )
+);
+children.push(
+  para(
+    'On a more personal note, this assignment was the first time I shipped an app that actually runs on my own phone, not just on a localhost browser tab. Watching Expo Go reload the screen as I saved a file in the editor turned out to be the most motivating part of the whole semester for me — I now understand why mobile developers say the development loop matters at least as much as the language itself.'
   )
 );
 
